@@ -24,7 +24,7 @@ The Expense Management App is a user-friendly and versatile tool designed to sim
 Before you begin, ensure you have Python installed on your machine. The application uses several Python libraries, which you can install using the following command:
 
 ```bash
-pip install pillow matplotlib pandas
+pip install pillow matplotlib pandas tkinter
 ```
 
 ### Installation
