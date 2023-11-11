@@ -1,6 +1,7 @@
 # Expense Management App
 
 The Expense Management App is a user-friendly and versatile tool designed to simplify and streamline the process of tracking personal expenses. Developed using Python and Tkinter, this application empowers users to record, manage, and analyze their financial transactions effortlessly. Whether you are keen on gaining insights into your spending patterns or looking for a convenient way to organize your expenses, this app is tailored to meet your needs.
+![Expense Management App I](https://github.com/AlphaNitroSS/Expense-Management-App/assets/95396644/95527793-b268-42a3-8ddb-3d202c1afb05)
 
 ## Table of Contents
 1. [Getting Started](#getting-started)
