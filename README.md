@@ -44,7 +44,7 @@ cd expense-management-app
 3. Run the application:
 
 ```bash
-python expense_management_app.py
+python PersonalExpensesManagementApp.py
 ```
 
 ## Features
