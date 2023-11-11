@@ -197,79 +197,77 @@ def populate_subcategory_dropdown(selected_category):
 
 
 def analyze_expenses():
-    messagebox.showinfo('Information', ' Statistics Under Development. \n Work Under Process. \n Visit Later for Statistics.')
+    # messagebox.showinfo('Information', ' Statistics Under Development. \n Work Under Process. \n Visit Later for Statistics.')
 
 # --------------------------------------------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX--------------------------------------
 # ------------------------------------------------------              _Statistics Under Development Process_               -----------------------------------------------------------------
-    # # Fetch expense data from the database
-    # query1 = "SELECT strftime('%Y-%m-%d', purchase_date) as date, sum(price) as total_price FROM expense_record GROUP BY date"
-    # expense_data = expense_db.fetchRecord(query1)
+    # Fetch expense data from the database
+    query1 = "SELECT category,expense_name,purchase_date, price FROM expense_record"
+    expense_data = expense_db.fetchRecord(query1)
+    df = pd.DataFrame(expense_data, columns=['category','expense_name', 'purchase_date', 'price'])
 
-    # # Convert data to a DataFrame for easier manipulation
-    # df = pd.DataFrame(expense_data, columns=["Date", "Total Price"])
 
-    # # Drop rows with missing values in the date column
-    # df = df.dropna(subset=['Date'])
+    # Convert 'purchase_date' to datetime format
+    df['purchase_date'] = pd.to_datetime(df['purchase_date'])
 
-    # # Convert the 'Date' column to datetime
-    # df['Date'] = pd.to_datetime(df['Date'])
 
-    # # Analysis type selection using a Combobox
-    # analysis_types = ["Daily", "Weekly", "Monthly", "Yearly"]
-    # selected_analysis_type = ttk.Combobox(ws, values=analysis_types)
-    # selected_analysis_type.set("Daily")  # Set a default value
+    # Calculate statistics
+    total_expense = df['price'].sum()
+    average_expense = df['price'].mean()
+    most_expensive_purchase = df.loc[df['price'].idxmax()]
+    least_expensive_purchase = df.loc[df['price'].idxmin()]
 
-    # # Prompt user to select analysis type
-    # user_choice = askstring("Analysis Type", "Select Analysis Type:", initialvalue=selected_analysis_type.get())
+        # Create the main Tkinter window
+    root = Tk()
+    root.title('Expense Analysis')
 
-    # if user_choice in analysis_types:
-    #     selected_analysis_type.set(user_choice)
+    # Create labels to display statistics
+    total_label = Label(root, text=f'Total Expense: ${total_expense:.2f}')
+    average_label = Label(root, text=f'Average Expense: ${average_expense:.2f}')
+    most_expensive_label = Label(root, text=f'Most Expensive Purchase: {most_expensive_purchase["expense_name"]} (${most_expensive_purchase["price"]:.2f})')
+    least_expensive_label = Label(root, text=f'Least Expensive Purchase: {least_expensive_purchase["expense_name"]} (${least_expensive_purchase["price"]:.2f})')
 
-    #     # Perform analysis based on the selected type
-    #     if user_choice.lower() == 'daily':
-    #         df_resampled = df.set_index('Date')
-    #     elif user_choice.lower() == 'weekly':
-    #         df_resampled = df.resample('W-Mon', on='Date').sum()
-    #     elif user_choice.lower() == 'monthly':
-    #         df_resampled = df.resample('M', on='Date').sum()
-    #     elif user_choice.lower() == 'yearly':
-    #         df_resampled = df.resample('Y', on='Date').sum()
+    # Create a bar chart with multicolor bars
+    plt.figure(figsize=(8, 4))
+    bars = plt.bar(df['category'], df['price'], color=['skyblue'] * len(df))
 
-    #     # Check if the DataFrame is not empty before plotting
-    #     if not df_resampled.empty:
-    #         # Highlight max expenses
-    #         max_expense = df_resampled['Total Price'].max()
-    #         max_expense_date = df_resampled[df_resampled['Total Price'] == max_expense].index[0]
+    # Highlight maximum, minimum, and average values
+    max_index = df['price'].idxmax()
+    min_index = df['price'].idxmin()
+    average_value = df['price'].mean()
 
-    #         # Reset the index for plotting
-    #         df_resampled = df_resampled.reset_index()
+    # Set the color of bars to red for maximum and green for minimum
+    bars[max_index].set_color('red')
+    bars[min_index].set_color('green')
 
-    #         # Plotting the graph
-    #         fig, ax = plt.subplots()
-    #         df_resampled.plot(kind='bar', x='Date', y='Total Price', ax=ax)
-    #         ax.set_title(f"Expense Analysis ({user_choice})")
-    #         ax.set_xlabel("Date")
-    #         ax.set_ylabel("Total Expense")
-    #         plt.xticks(rotation=45)
+    # Set the edgecolor (border) of bars to red for maximum and green for minimum
+    bars[max_index].set_edgecolor('red')
+    bars[min_index].set_edgecolor('green')
 
-    #         # Highlight max expenses
-    #         ax.annotate(f'Max Expense: {max_expense:.2f}', xy=(max_expense_date, max_expense),
-    #                     xytext=(max_expense_date, max_expense * 1.2),
-    #                     arrowprops=dict(facecolor='red', arrowstyle='->'))
+    # Draw a dashed line for the average value
+    plt.axhline(y=average_value, color='orange', linestyle='--', label='Average')
 
-    #         # Display the graph in a new window
-    #         graph_window = Toplevel(ws)
-    #         canvas = FigureCanvasTkAgg(fig, master=graph_window)
-    #         canvas.draw()
-    #         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+    # Display labels for maximum and minimum values
+    plt.text(max_index, df['price'][max_index] + 5, f'Max: ${df["price"][max_index]:.2f}', color='red', ha='center', va='bottom')
+    plt.text(min_index, df['price'][min_index] - 5, f'Min: ${df["price"][min_index]:.2f}', color='green', ha='center', va='top')
 
-    #         toolbar = NavigationToolbar2Tk(canvas, graph_window)
-    #         toolbar.update()
-    #         canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
-    #     else:
-    #         messagebox.showinfo('Info', f'No data available for the selected analysis type ({user_choice}).')
-    # else:
-    #     messagebox.showinfo('Info', 'Invalid analysis type selected.')
+    plt.xlabel('Expense Categories')
+    plt.ylabel('Expense Amount')
+    plt.title('Expense Distribution by Category')
+    plt.legend()
+
+    # Convert Matplotlib figure to Tkinter canvas
+    canvas = FigureCanvasTkAgg(plt.gcf(), master=root)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
+
+    # Pack labels
+    total_label.pack()
+    average_label.pack()
+    most_expensive_label.pack()
+    least_expensive_label.pack()
+
+
 
 # -----------------------------------------------------------------------------------------------XXXXXXXXXXXXXXXXXXXXXXXX-------------------------------------------------------------------
 # --------------------------------------------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX--------------------------------------
@@ -278,6 +276,7 @@ def analyze_expenses():
 # create tkinter object
 ws = Tk()
 ws.title('Personal Expense Management App')
+
 
 # List of payment modes
 PaymentModes = ["Online", "Cash", "Credit", "Other"] 
