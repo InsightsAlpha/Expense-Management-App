@@ -69,7 +69,7 @@ python PersonalExpensesManagementApp.py
 
 ## How to Use
 
-1. Run the application using `python expense_management_app.py`.
+1. Run the application using `python PersonalExpensesManagementApp.py`.
 2. Enter expense details in the provided fields.
 3. Use the action buttons to save, update, or delete expense records.
 4. Explore additional features such as adding categories, subcategories, and descriptions.
@@ -86,7 +86,7 @@ The tables within these databases maintain a structured and organized storage of
 
 ## User Interface
 
-The graphical user interface (GUI) provides an intuitive and user-friendly experience. It includes entry fields, buttons, and interactive widgets, all designed to simplify the expense tracking process. Dropdown menus for categories and subcategories enhance the accuracy of data entry.
+The graphical user interface (GUI) provides an intuitive and user-friendly experience. It includes entry fields, buttons, and interactive widgets, all designed to simplify the expense tracking process. Dropdown menus for categories and subcategories enhance the accuracy of data entry. (Here, We Use the Python Tkinter Module to Design the App GUI.)
 
 ## Contributing
 
